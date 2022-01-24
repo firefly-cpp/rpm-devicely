@@ -6,9 +6,11 @@
 # We can generate PDF documentation as a substitute.
 %bcond_without doc_pdf
 
-%global pypi_name devicely
+# no debug files
+# package can not be noarch due to the missing dependencies in s390x
+%define debug_package %{nil}
 
-%global debug_package %{nil}
+%global pypi_name devicely
 
 %global _description %{expand:
 Devicely is a Python package for reading, de-identifying and writing data from 
@@ -25,6 +27,9 @@ Summary:        A Python package for reading, timeshifting and writing sensor da
 License:        MIT
 URL:            https://github.com/hpi-dhc/%{pypi_name}
 Source0:        %{url}/archive/v%{version}/%{pypi_name}-%{version}.tar.gz
+
+# building docs is now working in clean environment
+# already fixed in https://github.com/hpi-dhc/devicely/pull/60
 Patch0:         0001-Docs.patch
 
 # It depends on pyedflib which is not available on s390x
@@ -37,8 +42,7 @@ ExcludeArch:    s390x
 Summary:        %{summary}
 
 BuildRequires:  python3-devel
-BuildRequires:  pyproject-rpm-macros
-BuildRequires:  python-toml-adapt
+BuildRequires:  %{py3_dist toml-adapt}
 
 %if %{with tests}
 BuildRequires:  %{py3_dist pytest}
